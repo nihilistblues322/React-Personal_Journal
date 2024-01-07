@@ -6,6 +6,8 @@ import LeftPanel from './layouts/LeftPanel/LeftPanel';
 import JournalList from './components/JournalList/JournalList';
 import Body from './layouts/Body/Body';
 import JournalAddButton from './components/JournalAddButton/JournalAddButton';
+import JournalForm from './components/JournalForm/JournalForm';
+
 
 function App() {
     const data = [
@@ -20,11 +22,15 @@ function App() {
             text: 'Думал, что очень много времени'
         }
     ];
+
+
+
+
     return (
         <div className='app'>
             <LeftPanel>
                 <Header />
-                <JournalAddButton/>
+                <JournalAddButton />
                 <JournalList>
                     <CardButton>
                         <JournalItem
@@ -44,11 +50,10 @@ function App() {
             </LeftPanel>
 
             <Body>
-                Body
-
+                <JournalForm />
             </Body>
 
-            
+
         </div>
     );
 }
