@@ -4,8 +4,6 @@ import { useEffect, useReducer } from "react";
 import cn from "classnames";
 import { formReducer, INITIAL_STATE } from "./JournalForm.state";
 
-
-
 function JournalForm({ onSubmit }) {
     const [formState, dispatchForm] = useReducer(formReducer, INITIAL_STATE);
     const { isValid, isFormReadyToSubmit, values } = formState;
@@ -25,15 +23,22 @@ function JournalForm({ onSubmit }) {
     useEffect(() => {
         if (isFormReadyToSubmit) {
             onSubmit(values);
+            dispatchForm({ type: "CLEAR" });
         }
     }, [isFormReadyToSubmit]);
 
+    const onChange = (e) => {
+        dispatchForm({
+            type: 'SET_VALUE',
+            payload: {
+                [e.target.name]: e.target.value
+            }
+        });
+    };
+
     const addJournalItem = (e) => {
         e.preventDefault();
-        const formData = new FormData(e.target);
-        const formProps = Object.fromEntries(formData);
-        dispatchForm({ type: "SUBMIT", payload: formProps });
-
+        dispatchForm({ type: "SUBMIT"});
     };
 
     return (
@@ -41,6 +46,8 @@ function JournalForm({ onSubmit }) {
             <div>
                 <input
                     type="text"
+                    onChange={onChange}
+                    value={values.title}
                     name="title"
                     className={cn(styles.input_title, {
                         [styles.invalid]: !isValid.title,
@@ -55,6 +62,8 @@ function JournalForm({ onSubmit }) {
                 </label>
                 <input
                     type="date"
+                    onChange={onChange}
+                    value={values.date}
                     name="date"
                     id="date"
                     className={cn(styles.input, {
@@ -69,12 +78,14 @@ function JournalForm({ onSubmit }) {
                     <span>Метки</span>
                 </label>
 
-                <input type="text" name="tag" id="tag" className={styles.input} />
+                <input type="text" onChange={onChange} value={values.tag} name="tag" id="tag" className={styles.input} />
             </div>
 
             <textarea
                 name="post"
                 id=""
+                onChange={onChange}
+                value={values.post}
                 cols="30"
                 rows="10"
                 className={cn(styles.input, {
