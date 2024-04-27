@@ -24,6 +24,7 @@ export function formReducer(state, action) {
       return {
         ...state,
         values: INITIAL_STATE.values,
+        isFormReadyToSubmit: false,
       };
     case "RESET_VALIDITY":
       return {
