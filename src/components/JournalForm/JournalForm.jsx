@@ -3,6 +3,7 @@ import Button from "../Button/Button";
 import { useEffect, useReducer, useRef } from "react";
 import cn from "classnames";
 import { formReducer, INITIAL_STATE } from "./JournalForm.state";
+import Input from '../Input/Input';
 
 function JournalForm({ onSubmit }) {
     const [formState, dispatchForm] = useReducer(formReducer, INITIAL_STATE);
@@ -62,15 +63,14 @@ function JournalForm({ onSubmit }) {
     return (
         <form className={styles.form} onSubmit={addJournalItem}>
             <div>
-                <input
+                <Input
                     type="text"
                     ref={titleRef}
+                    isValid={isValid.title}
                     onChange={onChange}
                     value={values.title}
                     name="title"
-                    className={cn(styles.input_title, {
-                        [styles.invalid]: !isValid.title,
-                    })}
+                    apperance="title"
                 />
             </div>
 
@@ -79,16 +79,15 @@ function JournalForm({ onSubmit }) {
                     <img src="/calendar.svg" alt="calendar" />
                     <span>Дата</span>
                 </label>
-                <input
+                <Input
                     type="date"
                     ref={dateRef}
+                    isValid={isValid.date}
                     onChange={onChange}
                     value={values.date}
                     name="date"
                     id="date"
-                    className={cn(styles.input, {
-                        [styles.invalid]: !isValid.date,
-                    })}
+
                 />
             </div>
 
@@ -98,7 +97,7 @@ function JournalForm({ onSubmit }) {
                     <span>Метки</span>
                 </label>
 
-                <input type="text" onChange={onChange} value={values.tag} name="tag" id="tag" className={styles.input} />
+                <Input type="text" onChange={onChange} isValid={isValid.tag} value={values.tag} name="tag" id="tag" />
             </div>
 
             <textarea
@@ -112,6 +111,7 @@ function JournalForm({ onSubmit }) {
                 className={cn(styles.input, {
                     [styles.invalid]: !isValid.post,
                 })}
+
             ></textarea>
             <Button text="Сохранить" />
         </form>
