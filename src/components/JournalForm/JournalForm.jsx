@@ -33,7 +33,7 @@ function JournalForm({ onSubmit }) {
             setFormValidState(state => ({ ...state, date: false }));
             isFormValid = false;
         } else {
-            setFormValidState(state => ({ ...state, text: true }));
+            setFormValidState(state => ({ ...state, date: true }));
         }
         if (!isFormValid) {
             return;
