@@ -1,11 +1,11 @@
 import { useContext } from "react";
 import { UserContext } from "../../context/user.context";
 
-function SelectUser({ changeUser }) {
+function SelectUser() {
 
-    const { userId } = useContext(UserContext);
+    const { userId, setUserId } = useContext(UserContext);
     const changeUser = (e) => {
-        changeUser(e.target.value);
+        setUserId(Number(e.target.value));
     };
 
     return (
@@ -15,3 +15,5 @@ function SelectUser({ changeUser }) {
         </select>
     );
 }   
+
+export default SelectUser;
