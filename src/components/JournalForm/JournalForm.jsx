@@ -3,10 +3,10 @@ import Button from "../Button/Button";
 import { useEffect, useReducer, useRef, useContext } from "react";
 import cn from "classnames";
 import { formReducer, INITIAL_STATE } from "./JournalForm.state";
-import Input from '../Input/Input';
+import Input from "../Input/Input";
 import { UserContext } from "../../context/user.context";
 
-function JournalForm({ onSubmit }) {
+function JournalForm({ onSubmit, data }) {
     const [formState, dispatchForm] = useReducer(formReducer, INITIAL_STATE);
     const { isValid, isFormReadyToSubmit, values } = formState;
     const titleRef = useRef();
@@ -29,6 +29,10 @@ function JournalForm({ onSubmit }) {
     };
 
     useEffect(() => {
+        dispatchForm({ type: "SET_VALUE", payload: { ...data } });
+    }, [data]);
+
+    useEffect(() => {
         let timerId;
         if (!isValid.date || !isValid.post || !isValid.title) {
             focusError(isValid);
@@ -45,24 +49,18 @@ function JournalForm({ onSubmit }) {
         if (isFormReadyToSubmit) {
             onSubmit(values);
             dispatchForm({ type: "CLEAR" });
+            dispatchForm({ type: "SET_VALUE", payload: { userId } });
         }
-    }, [isFormReadyToSubmit, values, onSubmit]);
+    }, [isFormReadyToSubmit, values, onSubmit, userId]);
 
     useEffect(() => {
-        dispatchForm({
-            type: 'SET_VALUE',
-            payload: {
-                userId
-            }
-        });
+        dispatchForm({ type: "SET_VALUE", payload: { userId } });
     }, [userId]);
 
     const onChange = (e) => {
         dispatchForm({
-            type: 'SET_VALUE',
-            payload: {
-                [e.target.name]: e.target.value
-            }
+            type: "SET_VALUE",
+            payload: { [e.target.name]: e.target.value },
         });
     };
 
@@ -72,7 +70,6 @@ function JournalForm({ onSubmit }) {
     };
 
     return (
-
         <form className={styles.form} onSubmit={addJournalItem}>
             <div>
                 <Input
@@ -96,10 +93,13 @@ function JournalForm({ onSubmit }) {
                     ref={dateRef}
                     isValid={isValid.date}
                     onChange={onChange}
-                    value={values.date}
+                    value={
+                        values.date
+                            ? new Date(values.date).toISOString().slice(0, 10)
+                            : ""
+                    }
                     name="date"
                     id="date"
-
                 />
             </div>
 
@@ -109,7 +109,14 @@ function JournalForm({ onSubmit }) {
                     <span>Метки</span>
                 </label>
 
-                <Input type="text" onChange={onChange} isValid={isValid.tag} value={values.tag} name="tag" id="tag" />
+                <Input
+                    type="text"
+                    onChange={onChange}
+                    isValid={isValid.tag}
+                    value={values.tag}
+                    name="tag"
+                    id="tag"
+                />
             </div>
 
             <textarea
@@ -122,14 +129,9 @@ function JournalForm({ onSubmit }) {
                 rows="10"
                 className={cn(styles.input, {
                     [styles.invalid]: !isValid.post,
-                })}
-
-            ></textarea>
-            <Button text="Сохранить" />
+                })}></textarea>
+            <Button>Сохранить</Button>
         </form>
-
-
-
     );
 }
 export default JournalForm;
